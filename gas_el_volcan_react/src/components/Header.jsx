@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-function Header({ carrito }) {
+function Header({ carrito, usuario, cerrarSesion }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
 
   const cantidadCarrito = carrito.reduce(
     (total, producto) => total + producto.cantidad,
     0
   )
+
   const enlaces = [
     { nombre: 'Inicio', ruta: '/' },
     { nombre: 'Productos', ruta: '/productos' },
@@ -45,10 +46,38 @@ function Header({ carrito }) {
 
         <div className="acciones">
 
-          <Link className="icono-btn" to="/login">
-            <i className="bi bi-person-circle"></i>
-            <span className="texto-accion">Ingresar</span>
-          </Link>
+          {usuario ? (
+            <>
+              {usuario.rol === 'admin' && (
+                <Link
+                  className="icono-btn"
+                  to="/admin/productos"
+                >
+                  <i className="bi bi-gear"></i>
+                  <span className="texto-accion">
+                    Administración
+                  </span>
+                </Link>
+              )}
+
+              <button
+                type="button"
+                className="icono-btn"
+                onClick={() => {
+                  cerrarSesion()
+                  setMenuAbierto(false)
+                }}
+              >
+                <i className="bi bi-box-arrow-right"></i>
+                <span className="texto-accion">Salir</span>
+              </button>
+            </>
+          ) : (
+            <Link className="icono-btn" to="/login">
+              <i className="bi bi-person-circle"></i>
+              <span className="texto-accion">Ingresar</span>
+            </Link>
+          )}
 
           <Link className="icono-btn" to="/carrito">
             <i className="bi bi-cart3"></i>
@@ -72,7 +101,6 @@ function Header({ carrito }) {
           </button>
 
         </div>
-
 
       </nav>
     </header>

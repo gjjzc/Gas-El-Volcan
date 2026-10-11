@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import './estilos.css'
 import ProductList from './components/ProductList.jsx'
@@ -14,10 +14,22 @@ import Blog from './pages/Blog.jsx'
 import ArticuloBlog from './pages/ArticuloBlog.jsx'
 import Nosotros from './pages/Nosotros.jsx'
 import Contacto from './pages/Contacto.jsx'
+import Login from './pages/Login.jsx'
+import Registro from './pages/Registro.jsx'
 
 function App() {
   const [productos, setProductos] = useState([])
   const [productosCargados, setProductosCargados] = useState(false)
+
+  const [usuario, setUsuario] = useState(null)
+
+  const iniciarSesion = (datosUsuario) => {
+    setUsuario(datosUsuario)
+  }
+
+  const cerrarSesion = () => {
+    setUsuario(null)
+  }
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -160,7 +172,11 @@ function App() {
 
   return (
     <>
-      <Header carrito={carrito} />
+      <Header
+        carrito={carrito}
+        usuario={usuario}
+        cerrarSesion={cerrarSesion}
+      />
 
       <main className="contenedor">
 
@@ -215,8 +231,12 @@ function App() {
           />
 
           <Route
-            path='/login'
-            element={<h1>Registrate e inicia sesion</h1>}
+            path="/login"
+            element={<Login iniciarSesion={iniciarSesion} />}
+          />
+
+          <Route path="/registro"
+            element={<Registro />}
           />
 
           <Route
@@ -232,13 +252,17 @@ function App() {
           <Route
             path="/admin/productos"
             element={
-              <AdminProductos
-                productos={productos}
-                setProductos={setProductos}
-              />
+              usuario?.rol === 'admin' ? (
+                <AdminProductos
+                  productos={productos}
+                  setProductos={setProductos}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
-
           />
+
           <Route
             path="/categorias"
             element={<Categorias productos={productos} />}
