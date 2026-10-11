@@ -19,11 +19,15 @@ function Header({ carrito, usuario, cerrarSesion }) {
     { nombre: 'Contacto', ruta: '/contacto' }
   ]
 
+  const cerrarMenu = () => {
+    setMenuAbierto(false)
+  }
+
   return (
     <header>
       <nav className="contenedor nav" aria-label="Menú principal">
 
-        <Link to="/">
+        <Link to="/" onClick={cerrarMenu}>
           <img
             src="/img/logovolcan.jpg"
             alt="Gas El Volcán"
@@ -36,28 +40,90 @@ function Header({ carrito, usuario, cerrarSesion }) {
             <li key={enlace.ruta}>
               <NavLink
                 to={enlace.ruta}
-                onClick={() => setMenuAbierto(false)}
+                onClick={cerrarMenu}
               >
                 {enlace.nombre}
               </NavLink>
             </li>
           ))}
+
+          {usuario?.rol === 'admin' && (
+            <>
+              
+              <li>
+                <NavLink
+                  to="/admin/pedidos"
+                  onClick={cerrarMenu}
+                >
+                  Administrar pedidos
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/admin/productos"
+                  onClick={cerrarMenu}
+                >
+                  Administrar productos
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/admin/usuarios"
+                  onClick={cerrarMenu}
+                >
+                  Administrar usuarios
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {usuario?.rol === 'cliente' && (
+            <li>
+              <NavLink
+                to="/mis-pedidos"
+                onClick={cerrarMenu}
+              >
+                Mis pedidos
+              </NavLink>
+            </li>
+          )}
+
+          {usuario?.rol === 'repartidor' && (
+            <li>
+              <NavLink
+                to="/repartidor"
+                onClick={cerrarMenu}
+              >
+                Panel de entregas
+              </NavLink>
+            </li>
+          )}
         </ul>
 
         <div className="acciones">
 
           {usuario ? (
             <>
-              {usuario.rol === 'admin' && (
+              {usuario.rol === 'admin' ? (
                 <Link
                   className="icono-btn"
                   to="/admin/productos"
+                  onClick={cerrarMenu}
                 >
                   <i className="bi bi-gear"></i>
                   <span className="texto-accion">
                     Administración
                   </span>
                 </Link>
+              ) : (
+                <span className="icono-btn">
+                  <i className="bi bi-person-circle"></i>
+                  <span className="texto-accion">
+                    Hola, {usuario.nombre}
+                  </span>
+                </span>
               )}
 
               <button
@@ -65,26 +131,40 @@ function Header({ carrito, usuario, cerrarSesion }) {
                 className="icono-btn"
                 onClick={() => {
                   cerrarSesion()
-                  setMenuAbierto(false)
+                  cerrarMenu()
                 }}
               >
                 <i className="bi bi-box-arrow-right"></i>
-                <span className="texto-accion">Salir</span>
+                <span className="texto-accion">
+                  Salir
+                </span>
               </button>
             </>
           ) : (
-            <Link className="icono-btn" to="/login">
+            <Link
+              className="icono-btn"
+              to="/login"
+              onClick={cerrarMenu}
+            >
               <i className="bi bi-person-circle"></i>
-              <span className="texto-accion">Ingresar</span>
+              <span className="texto-accion">
+                Ingresar
+              </span>
             </Link>
           )}
 
-          <Link className="icono-btn" to="/carrito">
-            <i className="bi bi-cart3"></i>
-            <span className="contador contador-carrito">
-              {cantidadCarrito}
-            </span>
-          </Link>
+          {usuario?.rol !== 'repartidor' && (
+            <Link
+              className="icono-btn"
+              to="/carrito"
+              onClick={cerrarMenu}
+            >
+              <i className="bi bi-cart3"></i>
+              <span className="contador contador-carrito">
+                {cantidadCarrito}
+              </span>
+            </Link>
+          )}
 
           <button
             type="button"

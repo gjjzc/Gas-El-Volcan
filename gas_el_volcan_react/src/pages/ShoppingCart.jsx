@@ -1,100 +1,178 @@
-import { Container } from 'react-bootstrap'
+import { useState } from 'react'
+import { Container, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
-function ShoppingCart({ carrito, eliminarDelCarrito, cambiarCantidad, finalizarCompra }) {
-    const total = carrito.reduce((suma, producto) => {
-        return suma + producto.precio * producto.cantidad
-    }, 0)
+function ShoppingCart({
+  carrito,
+  eliminarDelCarrito,
+  cambiarCantidad,
+  finalizarCompra
+}) {
+  const [metodoPago, setMetodoPago] = useState('')
+  const [error, setError] = useState('')
 
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    const confirmarCompra = (simularFallo = false) => {
-        const compraExitosa = finalizarCompra(simularFallo)
+  const total = carrito.reduce(
+    (suma, producto) =>
+      suma + producto.precio * producto.cantidad,
+    0
+  )
 
-        if (compraExitosa) {
-            navigate('/compra-exitosa')
-        } else {
-            navigate('/compra-fallida')
-        }
+  const confirmarCompra = (simularFallo = false) => {
+    if (!metodoPago) {
+      setError('Selecciona un método de pago para continuar.')
+      return
     }
-    return (
-        <Container>
-            <h1>Tu carrito de compras</h1>
 
-            {carrito.length === 0 ? (
-                <p>Tu carrito está vacío.</p>
-            ) : (
-                <div>
-                    {carrito.map((producto, index) => (
-                        <div key={producto.id} className="mb-3">
-                            <h3>{producto.nombre}</h3>
+    setError('')
 
-                            <p>
-                                Precio unitario: ${producto.precio.toLocaleString('es-CL')}
-                            </p>
+    const compraExitosa = finalizarCompra(simularFallo, metodoPago)
 
+    if (compraExitosa) {
+      navigate('/compra-exitosa')
+    } else {
+      navigate('/compra-fallida')
+    }
+  }
 
-                            <div className="d-flex align-items-center gap-3 mb-3">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-secondary"
-                                    onClick={() => cambiarCantidad(producto.id, -1)}
-                                >
-                                    −
-                                </button>
+  return (
+    <Container className="py-4">
+      <h1 className="mb-4">Tu carrito de compras</h1>
 
-                                <span>Cantidad: {producto.cantidad}</span>
+      {carrito.length === 0 ? (
+        <p>Tu carrito está vacío.</p>
+      ) : (
+        <>
+          {carrito.map((producto, index) => (
+            <Card className="mb-3 shadow-sm" key={producto.id}>
+              <Card.Body>
+                <h3 className="h5">{producto.nombre}</h3>
 
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-secondary"
-                                    onClick={() => cambiarCantidad(producto.id, 1)}
-                                >
-                                    +
-                                </button>
-                            </div>
+                <p>
+                  Precio unitario: $
+                  {producto.precio.toLocaleString('es-CL')}
+                </p>
 
+                <div className="d-flex align-items-center gap-3 mb-3">
+                  <Button
+                    type="button"
+                    variant="outline-secondary"
+                    onClick={() => cambiarCantidad(producto.id, -1)}
+                  >
+                    −
+                  </Button>
 
-                            <p>
-                                Subtotal: ${(producto.precio * producto.cantidad).toLocaleString('es-CL')}
-                            </p>
+                  <span>Cantidad: {producto.cantidad}</span>
 
-                            <button
-                                type="button"
-                                className="btn btn-danger"
-                                onClick={() => eliminarDelCarrito(index)}
-                            >
-                                Eliminar
-                            </button>
-                        </div>
-                    ))}
-
-
-                    <hr />
-
-                    <h2>
-                        Total: ${total.toLocaleString('es-CL')}
-                    </h2>
-
-                    <button
-                        type="button"
-                        className="btn btn-success mt-3"
-                        onClick={() => confirmarCompra(false)}
-                    >
-                        Finalizar compra
-                    </button>
-
-                    <button
-                        type="button"
-                        className="btn btn-outline-danger mt-3 ms-2"
-                        onClick={() => confirmarCompra(true)}
-                    >
-                        Simular compra fallida
-                    </button>
+                  <Button
+                    type="button"
+                    variant="outline-secondary"
+                    onClick={() => cambiarCantidad(producto.id, 1)}
+                  >
+                    +
+                  </Button>
                 </div>
-            )}
-        </Container>
-    )
+
+                <p>
+                  Subtotal: $
+                  {(producto.precio * producto.cantidad)
+                    .toLocaleString('es-CL')}
+                </p>
+
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={() => eliminarDelCarrito(index)}
+                >
+                  Eliminar
+                </Button>
+              </Card.Body>
+            </Card>
+          ))}
+
+          <Card className="shadow-sm mt-4">
+            <Card.Body>
+              <h2 className="h4">
+                Total: ${total.toLocaleString('es-CL')}
+              </h2>
+
+              <hr />
+
+              <h3 className="h5 mb-3">Método de pago</h3>
+
+              <Form>
+                <Form.Check
+                  type="radio"
+                  name="metodoPago"
+                  id="pago-efectivo"
+                  label="Efectivo al recibir el pedido"
+                  value="efectivo"
+                  checked={metodoPago === 'efectivo'}
+                  onChange={(evento) => {
+                    setMetodoPago(evento.target.value)
+                    setError('')
+                  }}
+                  className="mb-3"
+                />
+
+                <Form.Check
+                  type="radio"
+                  name="metodoPago"
+                  id="pago-tarjeta"
+                  label="Tarjeta"
+                  value="tarjeta"
+                  checked={metodoPago === 'tarjeta'}
+                  onChange={(evento) => {
+                    setMetodoPago(evento.target.value)
+                    setError('')
+                  }}
+                  className="mb-3"
+                />
+              </Form>
+
+              {metodoPago === 'efectivo' && (
+                <Alert variant="info">
+                  Pagarás en efectivo cuando recibas tu pedido.
+                </Alert>
+              )}
+
+              {metodoPago === 'tarjeta' && (
+                <Alert variant="info">
+                  El pago con tarjeta es una simulación.
+                  No se solicitarán datos bancarios.
+                </Alert>
+              )}
+
+              {error && (
+                <Alert variant="danger">
+                  {error}
+                </Alert>
+              )}
+
+              <div className="d-flex flex-wrap gap-2 mt-3">
+                <Button
+                  type="button"
+                  variant="success"
+                  onClick={() => confirmarCompra(false)}
+                >
+                  Finalizar compra
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline-danger"
+                  onClick={() => confirmarCompra(true)}
+                >
+                  Simular compra fallida
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </>
+      )}
+    </Container>
+  )
 }
 
 export default ShoppingCart

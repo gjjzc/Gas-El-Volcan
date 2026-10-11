@@ -42,7 +42,7 @@ const validarNombre = (valor) =>
         valor.trim()
     )
 
-function Registro() {
+function Registro({ registrarCliente }) {
     const [formulario, setFormulario] = useState(formularioInicial)
     const [error, setError] = useState('')
     const [mensaje, setMensaje] = useState('')
@@ -120,8 +120,17 @@ function Registro() {
             return
         }
 
+        const resultado = registrarCliente(formulario)
+
+        if (!resultado.correcto) {
+            setError(resultado.mensaje)
+            setMensaje('')
+            return
+        }
+
         setError('')
-        setMensaje('Formulario validado correctamente. El registro de cuentas aún no está conectado.')
+        setMensaje(resultado.mensaje)
+        setFormulario({ ...formularioInicial })
     }
 
     return (

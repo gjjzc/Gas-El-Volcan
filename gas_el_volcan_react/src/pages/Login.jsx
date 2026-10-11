@@ -3,7 +3,7 @@ import { Container, Card, Form, Button, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { validarCredenciales } from '../utils/autenticacion.js'
 
-function Login({ iniciarSesion }) {
+function Login({ iniciarSesion, ingresarCliente, ingresarRepartidor  }) {
   const [correo, setCorreo] = useState('')
   const [clave, setClave] = useState('')
   const [error, setError] = useState('')
@@ -12,16 +12,31 @@ function Login({ iniciarSesion }) {
 
   const manejarIngreso = (evento) => {
     evento.preventDefault()
+    setError('')
 
-    const usuario = validarCredenciales(correo, clave)
+    const administrador = validarCredenciales(correo, clave)
 
-    if (!usuario) {
-      setError('Correo o contraseña incorrectos.')
+    if (administrador) {
+      iniciarSesion(administrador)
+      navigate('/admin/productos')
       return
     }
 
-    iniciarSesion(usuario)
-    navigate('/admin/productos')
+    const clienteValido = ingresarCliente(correo, clave)
+
+    if (clienteValido) {
+      navigate('/')
+      return
+    }
+
+    const repartidorValido = ingresarRepartidor(correo, clave)
+
+    if (repartidorValido) {
+      navigate('/repartidor')
+      return
+    }
+
+    setError('Correo o contraseña incorrectos.')
   }
 
   return (
@@ -42,15 +57,24 @@ function Login({ iniciarSesion }) {
             <p>Ingresa para continuar.</p>
           </div>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert variant="danger">
+              {error}
+            </Alert>
+          )}
 
           <Form onSubmit={manejarIngreso}>
             <Form.Group className="mb-3">
-              <Form.Label>Correo</Form.Label>
+              <Form.Label>Correo electrónico</Form.Label>
               <Form.Control
                 type="email"
+                name="correo"
                 value={correo}
-                onChange={(evento) => setCorreo(evento.target.value)}
+                onChange={(evento) => {
+                  setCorreo(evento.target.value)
+                  setError('')
+                }}
+                maxLength={100}
                 required
               />
             </Form.Group>
@@ -59,19 +83,30 @@ function Login({ iniciarSesion }) {
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
                 type="password"
+                name="clave"
                 value={clave}
-                onChange={(evento) => setClave(evento.target.value)}
+                onChange={(evento) => {
+                  setClave(evento.target.value)
+                  setError('')
+                }}
                 required
               />
             </Form.Group>
 
-            <Button type="submit" variant="success" className="w-100">
+            <Button
+              type="submit"
+              variant="success"
+              className="w-100"
+            >
               Ingresar
             </Button>
           </Form>
 
           <p className="text-center mt-3 mb-0">
-            ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
+            ¿No tienes cuenta?{' '}
+            <Link to="/registro">
+              Regístrate aquí
+            </Link>
           </p>
         </Card.Body>
       </Card>
