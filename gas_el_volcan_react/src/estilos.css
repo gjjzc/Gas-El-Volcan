@@ -1,0 +1,1233 @@
+/* ============================================================
+   GAS EL VOLCÁN — Hoja de estilos
+   Organizada por secciones (de arriba hacia abajo, en el mismo
+   orden en que aparecen los elementos en el HTML) y escrita en
+   mobile-first: los estilos base son para pantallas pequeñas y
+   las media queries van agregando columnas a medida que la
+   pantalla crece (600px, 768px, 992px, 1200px).
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   1. RESET BÁSICO Y VARIABLES CSS (:root)
+   ------------------------------------------------------------ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Colores de marca */
+  --verde: #12372a;
+  --verde2: #315b4b;
+  --verde3: #dceee6;
+  --naranja: #f28c28;
+  --crema: #fff8ee;
+  --gris: #66736d;
+  --blanco: #fff;
+  --borde: #dfe7e3;
+
+  /* Sombra reutilizable */
+  --sombra: 0 10px 28px rgba(18, 55, 42, 0.10);
+
+  /* Espaciados reutilizables (para no repetir números sueltos) */
+  --espacio-s: 10px;
+  --espacio-m: 20px;
+  --espacio-l: 40px;
+
+  /* Ancho máximo del contenido */
+  --ancho-contenido: 1180px;
+}
+
+
+/* ------------------------------------------------------------
+   2. TIPOGRAFÍA Y ELEMENTOS BASE
+   ------------------------------------------------------------ */
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #24322c;
+  background: #f7faf8;
+  line-height: 1.5;
+  font-size: 1rem; /* 16px de referencia, el resto se escala con rem */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Selector de ETIQUETA (sin punto): aplica a TODAS las <img> del
+   sitio, salvo que una clase más específica (como .logo) la
+   sobrescriba. Evita que una imagen se salga de su contenedor. */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Pseudo-elemento: personaliza el texto de placeholder de todos los campos */
+input::placeholder,
+textarea::placeholder {
+  color: #9aa79f;
+}
+
+/* Selector de atributo: los input de tipo texto/email/password/número
+   y los select/textarea comparten el mismo look base */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+select,
+textarea {
+  border: 1px solid #cdd9d3;
+  border-radius: 9px;
+  padding: 11px;
+  background: var(--blanco);
+  width: 100%;
+}
+
+/* Pseudo-clase :focus para todos los campos editables */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid rgba(242, 140, 40, 0.25);
+  border-color: var(--naranja);
+}
+
+/* Pseudo-clase :disabled: un botón deshabilitado se ve "apagado" */
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+
+/* ------------------------------------------------------------
+   3. UTILIDADES GENERALES
+   ------------------------------------------------------------ */
+
+.contenedor {
+  /* min(): el contenido nunca supera el ancho máximo, pero en
+     pantallas chicas usa el 92% del viewport */
+  width: min(var(--ancho-contenido), 92%);
+  margin: auto;
+}
+
+.oculto {
+  display: none !important;
+}
+
+
+/* ------------------------------------------------------------
+   4. BARRA SUPERIOR (franja con dirección y despacho)
+   ------------------------------------------------------------ */
+
+.barra-superior {
+  background: var(--verde);
+  color: #fff;
+  font-size: 0.875rem;
+  padding: 8px 0;
+}
+
+.barra-superior .contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+
+/* ------------------------------------------------------------
+   5. ENCABEZADO Y NAVEGACIÓN (header > nav)
+   ------------------------------------------------------------ */
+
+header {
+  background: #fff;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.07);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.nav {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-m);
+}
+
+.logo {
+  height: 44px;
+  width: auto;
+}
+
+/* Combinador de hijo directo (>): solo los <a> que son hijos
+   directos de cada <li> del menú, no los que pudieran ir
+   anidados más adentro */
+.menu > li > a {
+  display: block;
+  font-weight: 700;
+  color: var(--verde);
+  padding: 10px 4px;
+}
+
+.menu {
+  list-style: none;
+  display: none; /* en mobile el menú empieza oculto */
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 15px 5%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.menu.abierto {
+  display: flex;
+}
+
+/* Pseudo-clase :hover + atributo aria-current (en vez de una
+   clase puesta a mano, dejamos que HTML/JS marquen la página activa) */
+.menu a:hover,
+.menu a[aria-current="page"] {
+  color: var(--naranja);
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icono-btn {
+  border: 1px solid var(--borde);
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 13px;
+  color: var(--verde);
+  font-weight: 700;
+}
+
+/* El texto "Ingresar" se oculta en mobile y solo se ve el ícono */
+.icono-btn .texto-accion {
+  display: none;
+}
+
+.contador {
+  background: var(--naranja);
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 7px;
+  font-size: 0.75rem;
+  margin-left: 4px;
+}
+
+.hamburguesa {
+  display: block;
+  border: 0;
+  background: none;
+  font-size: 1.75rem;
+  color: var(--verde);
+}
+
+
+/* ------------------------------------------------------------
+   6. BOTONES
+   ------------------------------------------------------------ */
+
+.btn {
+  display: inline-block;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-principal {
+  background: var(--naranja);
+  color: #fff;
+}
+
+.btn-secundario {
+  background: #fff;
+  color: var(--verde);
+  border: 1px solid var(--verde);
+}
+
+.btn-peligro {
+  background: #b23b2d;
+  color: #fff;
+}
+
+.btn-pequeno {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+}
+
+
+/* ------------------------------------------------------------
+   7. HERO (portada)
+   ------------------------------------------------------------ */
+
+.hero {
+  background: var(--verde3);
+  padding: 30px 0;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: var(--espacio-l);
+}
+
+.hero h1 {
+  /* clamp(): tamaño mínimo, preferido según el viewport, máximo */
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.05;
+  color: var(--verde);
+  margin-bottom: 18px;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--gris);
+  max-width: 590px;
+  margin-bottom: var(--espacio-m);
+}
+
+.hero img {
+  width: 100%;
+  border-radius: 24px;
+  box-shadow: var(--sombra);
+}
+
+
+/* ------------------------------------------------------------
+   8. SECCIONES GENÉRICAS Y TARJETAS DE PRODUCTO
+   ------------------------------------------------------------ */
+
+.seccion {
+  padding: 38px 0;
+}
+
+.titulo-seccion {
+  text-align: center;
+  margin-bottom: var(--espacio-m);
+}
+
+.titulo-seccion h2 {
+  color: var(--verde);
+  font-size: 1.75rem;
+}
+
+.titulo-seccion p {
+  color: var(--gris);
+  margin-top: 5px;
+}
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m);
+}
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--sombra);
+}
+
+.tarjeta img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.tarjeta .contenido {
+  padding: 17px;
+}
+
+.categoria {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--verde2);
+  font-weight: 700;
+}
+
+.tarjeta h3 {
+  font-size: 1.125rem;
+  color: var(--verde);
+  margin: 6px 0;
+}
+
+.precio {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--naranja);
+  margin: 8px 0;
+}
+
+.acciones-card {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.acciones-card .btn {
+  flex: 1;
+  text-align: center;
+}
+
+/* Pseudo-elemento ::before: numerito decorativo antes de cada título
+   de sección */
+.titulo-seccion h2::before {
+  content: "• ";
+  color: var(--naranja);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m);
+}
+
+.info {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid var(--borde);
+}
+
+.info h3 {
+  color: var(--verde);
+  margin-bottom: 8px;
+}
+
+.numero {
+  font-size: 2.125rem;
+  font-weight: 800;
+  color: var(--naranja);
+}
+
+/* Pseudo-clases estructurales: el primer y el último bloque .info
+   se destacan levemente para romper la monotonía de la grilla */
+.info-grid .info:first-child,
+.info-grid .info:last-child {
+  border-color: var(--naranja);
+}
+
+/* :not() -> a todas las tarjetas MENOS la última les mantenemos
+   el mismo espaciado (gap ya lo resuelve, queda como ejemplo de :not()) */
+.tarjetas .tarjeta:not(:last-child) {
+  scroll-margin-bottom: var(--espacio-m);
+}
+
+
+/* ------------------------------------------------------------
+   9. PÁGINAS INTERNAS (cabecera + filtros)
+   ------------------------------------------------------------ */
+
+.pagina {
+  padding: 32px 0;
+}
+
+.cabecera-pagina {
+  margin-bottom: var(--espacio-m);
+}
+
+.cabecera-pagina h1 {
+  font-size: 2rem;
+  color: var(--verde);
+}
+
+.cabecera-pagina p {
+  color: var(--gris);
+}
+
+/* Selector de hermano adyacente (+): el párrafo que viene
+   inmediatamente después de un <h1> dentro de la cabecera
+   recibe un espacio superior distinto al resto de los párrafos */
+.cabecera-pagina h1 + p {
+  margin-top: 6px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-s);
+  margin-bottom: var(--espacio-m);
+}
+
+.filtros button {
+  border: 1px solid var(--borde);
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 20px;
+  color: var(--verde);
+  font-weight: 700;
+}
+
+.filtros button.activo,
+.filtros button:hover {
+  background: var(--verde);
+  color: #fff;
+}
+
+#buscar-producto {
+  min-width: 220px;
+  border-radius: 20px;
+}
+
+.filtros select {
+  border-radius: 20px;
+}
+
+
+/* ------------------------------------------------------------
+   10. FORMULARIOS
+   ------------------------------------------------------------ */
+
+.formulario {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--sombra);
+}
+
+.grupo-form {
+  margin-bottom: 17px;
+}
+
+.grupo-form label {
+  display: block;
+  font-weight: 700;
+  color: var(--verde);
+  margin-bottom: 6px;
+}
+
+.grupo-form textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+/* Mensaje de error: JavaScript lo crea/quita del DOM con
+   createElement()/remove(), acá solo definimos su apariencia */
+.error {
+  color: #b23b2d;
+  font-size: 0.8125rem;
+  margin-top: 5px;
+}
+
+/* Campo marcado como inválido: JS agrega la clase "con-error"
+   al .grupo-form completo con classList.add(), en vez de tocar
+   estilos en línea desde el script */
+.grupo-form.con-error input,
+.grupo-form.con-error select,
+.grupo-form.con-error textarea {
+  border-color: #b23b2d;
+}
+
+.exito {
+  background: #e5f5eb;
+  color: #17653d;
+  border-radius: 9px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.grid-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.ancho-total {
+  grid-column: 1 / -1;
+}
+
+.form-centro {
+  max-width: 520px;
+  margin: auto;
+}
+
+.texto-centro {
+  text-align: center;
+}
+
+.link {
+  color: var(--naranja);
+  font-weight: 700;
+}
+
+/* Casilla "acepto términos": la etiqueta y el checkbox van en fila */
+.grupo-form.grupo-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.grupo-form.grupo-checkbox input[type="checkbox"] {
+  width: auto;
+  margin-top: 4px;
+}
+
+.grupo-form.grupo-checkbox label {
+  margin-bottom: 0;
+  font-weight: 400;
+  color: var(--gris);
+}
+
+
+/* ------------------------------------------------------------
+   10.1 CLASES UTILITARIAS
+   Reemplazan los estilos en línea (style="...") que había antes
+   directamente en el HTML: la guía recomienda mantener el CSS en
+   la hoja de estilos externa, no mezclado con el marcado.
+   ------------------------------------------------------------ */
+
+.formulario-angosto {
+  max-width: 700px;
+}
+
+.logo-formulario {
+  width: 200px;
+}
+
+.titulo-formulario {
+  color: var(--verde);
+  margin: 18px 0 8px;
+}
+
+.espacio-superior {
+  margin-top: 18px;
+}
+
+.seccion-clara {
+  background: #eef6f2;
+}
+
+.articulo-blog {
+  max-width: 850px;
+  margin: auto;
+}
+
+.imagen-articulo {
+  width: 100%;
+  border-radius: 14px;
+}
+
+.titulo-articulo {
+  color: var(--verde);
+  font-size: 2rem;
+  margin: 10px 0 20px;
+}
+
+.contenido-articulo p {
+  margin: 15px 0;
+}
+
+
+/* ------------------------------------------------------------
+   11. DETALLE DE PRODUCTO
+   ------------------------------------------------------------ */
+
+.detalle {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-l);
+  align-items: center;
+}
+
+.detalle-imagen {
+  background: #fff;
+  border-radius: 22px;
+  padding: 20px;
+  border: 1px solid var(--borde);
+  box-shadow: var(--sombra);
+}
+
+.detalle-imagen img {
+  width: 100%;
+  display: block;
+}
+
+.detalle h1 {
+  color: var(--verde);
+  font-size: 2rem;
+  line-height: 1.1;
+  margin: 8px 0;
+}
+
+.detalle .precio {
+  font-size: 1.75rem;
+}
+
+.detalle ul {
+  margin: 18px 0 25px;
+  padding-left: 22px;
+}
+
+.cantidad {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-s);
+  margin: 18px 0;
+}
+
+.cantidad input {
+  width: 75px;
+  text-align: center;
+}
+
+
+/* ------------------------------------------------------------
+   12. CARRITO DE COMPRAS
+   ------------------------------------------------------------ */
+
+.carrito-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m);
+}
+
+.lista-carrito {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-carrito {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.item-carrito img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.item-carrito h3 {
+  color: var(--verde);
+}
+
+.item-carrito .acciones-item {
+  grid-column: 2;
+}
+
+.resumen {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 22px;
+  height: max-content;
+}
+
+.fila-total {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+/* calc(): el total usa un tamaño de letra más grande que el
+   texto normal, calculado a partir del tamaño base */
+.total {
+  font-size: calc(1rem + 0.6rem);
+  font-weight: 800;
+  color: var(--naranja);
+  border-top: 1px solid var(--borde);
+  padding-top: 14px;
+}
+
+
+/* ------------------------------------------------------------
+   13. BLOG Y NOSOTROS
+   ------------------------------------------------------------ */
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m);
+}
+
+.blog-card {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.blog-card img {
+  width: 100%;
+  display: block;
+}
+
+.blog-card .contenido {
+  padding: 22px;
+}
+
+.blog-card h2 {
+  color: var(--verde);
+  margin: 5px 0 10px;
+}
+
+.blog-card p {
+  color: var(--gris);
+  margin-bottom: 16px;
+}
+
+/* Pseudo-elemento ::first-letter: capitular en el primer párrafo
+   de los artículos del blog */
+.contenido-articulo > p:first-child::first-letter {
+  font-size: 2.2em;
+  font-weight: 800;
+  color: var(--verde);
+  float: left;
+  line-height: 1;
+  padding-right: 6px;
+}
+
+.nosotros-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  align-items: center;
+}
+
+.nosotros-grid img {
+  width: 100%;
+  border-radius: 20px;
+}
+
+.lista {
+  padding-left: 22px;
+  margin: 15px 0;
+}
+
+.lista li {
+  margin: 8px 0;
+}
+
+/* Lista numerada de pasos ("¿Cómo funciona tu pedido?") */
+.lista-pasos {
+  max-width: 620px;
+  margin: 0 auto;
+  padding-left: 24px;
+  counter-reset: none;
+}
+
+.lista-pasos li {
+  margin: 14px 0;
+  font-size: 1.05rem;
+  color: var(--gris);
+}
+
+.lista-pasos li::marker {
+  color: var(--naranja);
+  font-weight: 700;
+}
+
+
+/* ------------------------------------------------------------
+   14. PIE DE PÁGINA
+   ------------------------------------------------------------ */
+
+footer {
+  background: var(--verde);
+  color: #e9f2ee;
+  margin-top: 40px;
+  padding: 30px 0 18px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m);
+}
+
+.footer-logo {
+  width: 190px;
+  margin-bottom: 12px;
+}
+
+footer h3 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+footer a {
+  color: #dceee6;
+}
+
+/* Combinador de hermanos generales (~): todos los párrafos que
+   vienen después del primer <h3> dentro de una misma columna */
+footer h3 ~ p a {
+  display: inline-block;
+}
+
+.copy {
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  margin-top: 25px;
+  padding-top: 15px;
+  text-align: center;
+  font-size: 0.8125rem;
+}
+
+
+/* ------------------------------------------------------------
+   15. TABLAS (panel administrador)
+   ------------------------------------------------------------ */
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.tabla th,
+.tabla td {
+  padding: 13px;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+}
+
+.tabla th {
+  background: var(--verde);
+  color: #fff;
+}
+
+.tabla tr:hover td {
+  background: #f7fbf9;
+}
+
+/* :nth-child(even) -> filas "cebra" para leer la tabla más fácil */
+.tabla tbody tr:nth-child(even) td {
+  background: #fbfdfc;
+}
+
+.estado {
+  display: inline-block;
+  border-radius: 15px;
+  padding: 4px 9px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #e5f5eb;
+  color: #17653d;
+}
+
+.estado.critico {
+  background: #fff0dd;
+  color: #a75a09;
+}
+
+
+/* ------------------------------------------------------------
+   16. PANEL ADMINISTRADOR
+   ------------------------------------------------------------ */
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--verde);
+  color: #fff;
+  padding: 25px 15px;
+}
+
+.sidebar img {
+  width: 150px;
+  margin: 0 auto 25px;
+  display: block;
+}
+
+.sidebar h3 {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #b8d1c5;
+  padding: 0 12px;
+  margin: 15px 0 6px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 11px 12px;
+  border-radius: 8px;
+  margin: 3px 0;
+  color: #fff;
+}
+
+.sidebar a:hover,
+.sidebar a[aria-current="page"] {
+  background: var(--verde2);
+}
+
+.admin-main {
+  padding: 24px;
+  background: #f5f8f6;
+}
+
+.admin-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin: var(--espacio-m) 0;
+}
+
+.admin-card {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.admin-card strong {
+  font-size: 2rem;
+  color: var(--verde);
+}
+
+.vacio {
+  background: #fff;
+  border: 1px dashed #bfcfc7;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  color: var(--gris);
+}
+
+.alerta {
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff4df;
+  color: #8b5a11;
+  margin-bottom: 15px;
+}
+
+
+/* ------------------------------------------------------------
+   17. NOTIFICACIONES (toast que reemplaza a los alert())
+   ------------------------------------------------------------ */
+
+.notificaciones {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 50;
+}
+
+.notificacion {
+  background: var(--verde);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: var(--sombra);
+  max-width: 280px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.notificacion.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notificacion.error {
+  background: #b23b2d;
+}
+
+
+/* ------------------------------------------------------------
+   18. MEDIA QUERIES (MOBILE FIRST)
+   Breakpoints usados: 600px, 768px, 992px y 1200px.
+   Se parte de la base para mobile (definida arriba) y desde acá
+   se van agregando columnas / mostrando elementos para pantallas
+   más grandes.
+   ------------------------------------------------------------ */
+
+/* --- Desde 600px: teléfonos grandes / mini-tablets --- */
+@media (min-width: 600px) {
+  .tarjetas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .blog-grid,
+  .info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .item-carrito {
+    grid-template-columns: 90px 1fr auto;
+  }
+
+  .item-carrito img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .item-carrito .acciones-item {
+    grid-column: auto;
+  }
+}
+
+/* --- Desde 768px: tablets --- */
+@media (min-width: 768px) {
+  .barra-superior .contenedor {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .nav {
+    min-height: 78px;
+  }
+
+  .logo {
+    height: 56px;
+  }
+
+  .hamburguesa {
+    display: none;
+  }
+
+  .menu {
+    display: flex;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 22px;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .icono-btn .texto-accion {
+    display: inline;
+  }
+
+  .hero {
+    padding: 45px 0;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .seccion {
+    padding: 55px 0;
+  }
+
+  .grid-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .nosotros-grid,
+  .detalle {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- Desde 992px: notebooks / escritorio --- */
+@media (min-width: 992px) {
+  .tarjetas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .carrito-layout {
+    grid-template-columns: 1.7fr 0.8fr;
+  }
+
+  .resumen {
+    position: sticky;
+    top: 100px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .admin-layout {
+    grid-template-columns: 240px 1fr;
+  }
+
+  .admin-main {
+    padding: 35px;
+  }
+
+  .admin-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* --- Desde 1200px: pantallas grandes --- */
+@media (min-width: 1200px) {
+  .tarjetas {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* --- Orientación horizontal en pantallas chicas ---
+   Cuando un celular se gira a horizontal, el hero suele quedar
+   muy alto para la poca altura disponible: se reduce el padding
+   vertical solo en ese caso. */
+@media (orientation: landscape) and (max-width: 900px) {
+  .hero {
+    padding: 18px 0;
+  }
+}
