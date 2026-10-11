@@ -9,6 +9,11 @@ import CompraFallida from './pages/CompraFallida.jsx'
 import AdminProductos from './pages/AdminProductos.jsx'
 import Categorias from './pages/Categorias.jsx'
 import Ofertas from './pages/Ofertas.jsx'
+import Inicio from './pages/Inicio.jsx'
+import Blog from './pages/Blog.jsx'
+import ArticuloBlog from './pages/ArticuloBlog.jsx'
+import Nosotros from './pages/Nosotros.jsx'
+import Contacto from './pages/Contacto.jsx'
 
 function App() {
   const [productos, setProductos] = useState([])
@@ -163,10 +168,10 @@ function App() {
           <Route
             path="/"
             element={
-              <>
-                <h1>Bienvenidos a Gas El Volcán</h1>
-                <p>Distribución de gas a domicilio</p>
-              </>
+              <Inicio
+                productos={productos}
+                agregarAlCarrito={agregarAlCarrito}
+              />
             }
           />
 
@@ -192,19 +197,21 @@ function App() {
             }
           />
 
-          <Route
-            path='/contacto'
-            element={<h1>Contactanos</h1>}
+          <Route path="/contacto"
+            element={<Contacto />}
+          />
+
+          <Route path="/nosotros"
+            element={<Nosotros />}
+          />
+
+          <Route path="/blog"
+            element={<Blog />}
           />
 
           <Route
-            path='/nosotros'
-            element={<h1>Conocenos</h1>}
-          />
-
-          <Route
-            path='/blog'
-            element={<h1>Tip Del Servicio</h1>}
+            path="/blog/:articulo"
+            element={<ArticuloBlog />}
           />
 
           <Route
