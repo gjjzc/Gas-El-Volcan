@@ -1,6 +1,8 @@
 # Gas El Volcán — Evaluación Parcial 2 (React)
 
-Aplicación académica de pedidos y distribución de gas, desarrollada para **DSY1104 — Desarrollo Fullstack II**. Esta entrega migra la versión original HTML/CSS/JavaScript a **React + Vite** y conserva el contexto de Chillán y sus zonas de despacho.
+Aplicación académica de pedidos y distribución de gas, desarrollada para **DSY1104 — Desarrollo Fullstack II**.
+
+**Integrantes:** Gerard Zambrano y Leonardo Bastidas. Esta entrega migra la versión original HTML/CSS/JavaScript a **React + Vite** y conserva el contexto de Chillán y sus zonas de despacho.
 
 ## Ramas y evolución
 
