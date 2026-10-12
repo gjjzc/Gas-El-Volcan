@@ -1,7 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Header from './components/Header.jsx'
+import BarraSuperior from './components/BarraSuperior.jsx'
+import Footer from './components/Footer.jsx'
 import './estilos.css'
 import ProductList from './components/ProductList.jsx'
+import DetalleProducto from './pages/DetalleProducto.jsx'
 import { useState, useEffect } from 'react'
 import ShoppingCart from './pages/ShoppingCart.jsx'
 import CompraExitosa from './pages/CompraExitosa.jsx'
@@ -21,6 +24,7 @@ import AdminPedidos from './pages/AdminPedidos.jsx'
 import PanelRepartidor from './pages/PanelRepartidor.jsx'
 import MisPedidos from './pages/MisPedidos.jsx'
 import { usuariosPrueba } from './utils/usuariosPrueba'
+import { validarDireccion } from './utils/direccionDespacho.js'
 
 function App() {
   const [productos, setProductos] = useState([])
@@ -53,6 +57,11 @@ function App() {
         correcto: false,
         mensaje: 'Ya existe una cuenta con ese correo o RUN.'
       }
+    }
+
+    if (datos.rol !== 'repartidor') {
+      const domicilio = validarDireccion(datos)
+      if (!domicilio.correcto) return domicilio
     }
 
     const nuevoUsuario = {
@@ -91,6 +100,11 @@ function App() {
         correcto: false,
         mensaje: 'El correo o RUN ya pertenece a otra cuenta.'
       }
+    }
+
+    if (datos.rol !== 'repartidor') {
+      const domicilio = validarDireccion(datos)
+      if (!domicilio.correcto) return domicilio
     }
 
     setClientes((anteriores) =>
@@ -217,6 +231,9 @@ function App() {
       }
     }
 
+    const domicilio = validarDireccion(datos)
+    if (!domicilio.correcto) return domicilio
+
     const nuevoCliente = {
       run,
       nombre: datos.nombre.trim(),
@@ -225,7 +242,7 @@ function App() {
       correo,
       clave: datos.clave,
       region: datos.region,
-      comuna: datos.comuna,
+      ...domicilio.direccion,
       rol: 'cliente'
     }
 
@@ -387,12 +404,17 @@ function App() {
   }
 
 
-  const finalizarCompra = (simularFallo = false, metodoPago = '') => {
+  const finalizarCompra = (simularFallo = false, metodoPago = '', datosDireccion = {}) => {
     if (carrito.length === 0) {
       return false
     }
 
     if (!['efectivo', 'tarjeta'].includes(metodoPago)) {
+      return false
+    }
+
+    const domicilio = validarDireccion(datosDireccion)
+    if (!domicilio.correcto) {
       return false
     }
 
@@ -432,7 +454,7 @@ function App() {
       fecha: new Date().toISOString(),
       cliente: usuario
         ? {
-          nombre: usuario.nombre,
+          nombre: [usuario.nombre, usuario.apellidoPaterno].filter(Boolean).join(' '),
           correo: usuario.correo,
           rol: usuario.rol
         }
@@ -445,6 +467,7 @@ function App() {
       })),
       total,
       metodoPago,
+      direccionEntrega: { ...domicilio.direccion },
       estado: 'pendiente'
     }
 
@@ -569,6 +592,7 @@ function App() {
 
   return (
     <>
+      <BarraSuperior />
       <Header
         carrito={carrito}
         usuario={usuario}
@@ -599,10 +623,21 @@ function App() {
           />
 
           <Route
+            path="/productos/:id"
+            element={
+              <DetalleProducto
+                productos={productos}
+                agregarAlCarrito={agregarAlCarrito}
+              />
+            }
+          />
+
+          <Route
             path="/carrito"
             element={
               <ShoppingCart
                 carrito={carrito}
+                usuario={usuario}
                 eliminarDelCarrito={eliminarDelCarrito}
                 cambiarCantidad={cambiarCantidad}
                 finalizarCompra={finalizarCompra}
@@ -761,6 +796,7 @@ function App() {
 
         </Routes>
       </main>
+      <Footer />
     </>
   )
 }

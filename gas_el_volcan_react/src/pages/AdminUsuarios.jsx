@@ -1,5 +1,6 @@
 
 import { useState } from 'react'
+import { validarDireccion } from '../utils/direccionDespacho.js'
 import {
   Container,
   Card,
@@ -40,6 +41,10 @@ const formularioInicial = {
   clave: '',
   region: '',
   comuna: '',
+  calle: '',
+  numero: '',
+  departamento: '',
+  referencia: '',
   rol: 'cliente'
 }
 
@@ -184,6 +189,14 @@ function AdminUsuarios({
       return
     }
 
+    if (formulario.rol === 'cliente') {
+      const domicilio = validarDireccion(formulario)
+      if (!domicilio.correcto) {
+        setError(domicilio.mensaje)
+        return
+      }
+    }
+
     const datosValidados = {
       ...formulario,
       run,
@@ -218,6 +231,10 @@ function AdminUsuarios({
       clave: '',
       region: usuario.region || '',
       comuna: usuario.comuna || '',
+      calle: usuario.calle || '',
+      numero: usuario.numero || '',
+      departamento: usuario.departamento || '',
+      referencia: usuario.referencia || '',
       rol: usuario.rol || 'cliente'
     })
 
@@ -419,6 +436,39 @@ function AdminUsuarios({
                   </Form.Select>
                 </Form.Group>
               </Col>
+
+              {formulario.rol === 'cliente' && (
+                <Col xs={12}>
+                  <h3 className="h6">Domicilio del cliente</h3>
+                  <p className="text-muted small">Completa la dirección que se usará para sus pedidos.</p>
+                  <Row className="g-3">
+                    <Col md={8}>
+                      <Form.Group>
+                        <Form.Label>Calle o avenida</Form.Label>
+                        <Form.Control name="calle" value={formulario.calle} onChange={actualizarCampo} maxLength={120} required />
+                      </Form.Group>
+                    </Col>
+                    <Col md={4}>
+                      <Form.Group>
+                        <Form.Label>Número de casa</Form.Label>
+                        <Form.Control name="numero" value={formulario.numero} onChange={actualizarCampo} maxLength={15} required />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Departamento / interior (opcional)</Form.Label>
+                        <Form.Control name="departamento" value={formulario.departamento} onChange={actualizarCampo} maxLength={40} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Referencia para despacho (opcional)</Form.Label>
+                        <Form.Control name="referencia" value={formulario.referencia} onChange={actualizarCampo} maxLength={120} />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Col>
+              )}
 
               <Col md={6}>
                 <Form.Group>

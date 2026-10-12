@@ -115,6 +115,15 @@ function Inicio({ productos, agregarAlCarrito }) {
                       </h3>
 
                       <Button
+                        as={Link}
+                        to={`/productos/${encodeURIComponent(producto.id)}`}
+                        variant="outline-success"
+                        className="mb-2"
+                      >
+                        Ver detalle
+                      </Button>
+
+                      <Button
                         variant="warning"
                         className="mt-auto"
                         onClick={() => agregarAlCarrito(producto)}

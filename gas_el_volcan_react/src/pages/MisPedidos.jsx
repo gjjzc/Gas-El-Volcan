@@ -1,3 +1,4 @@
+import { formatearDireccion } from '../utils/direccionDespacho.js'
 import { Container, Card, Badge, Alert, Table } from 'react-bootstrap'
 
 const estados = {
@@ -63,6 +64,8 @@ function MisPedidos({ pedidos = [], usuario }) {
                   <strong>Fecha:</strong>{' '}
                   {new Date(pedido.fecha).toLocaleString('es-CL')}
                 </p>
+
+                <p><strong>Dirección de entrega:</strong> {formatearDireccion(pedido.direccionEntrega)}</p>
 
                 <p>
                   <strong>Método de pago:</strong>{' '}

@@ -132,6 +132,17 @@ describe('ShoppingCart - Carrito de Gas El Volcán', () => {
     expect(cambiarCantidad).toHaveBeenCalledTimes(2)
   })
 
+  it('debe impedir una compra cuando falta la dirección de entrega', () => {
+    renderizarCarrito()
+    const radioEfectivo = contenedor.querySelector('#pago-efectivo')
+    act(() => radioEfectivo.click())
+
+    act(() => buscarBoton('Finalizar compra').click())
+
+    expect(contenedor.textContent).toContain('Selecciona una región y comuna válidas para el despacho.')
+    expect(finalizarCompra).not.toHaveBeenCalled()
+  })
+
   it('debe exigir método de pago y finalizar una compra correctamente', () => {
     finalizarCompra.and.returnValue(true)
 
@@ -163,13 +174,36 @@ describe('ShoppingCart - Carrito de Gas El Volcán', () => {
       'Pagarás en efectivo cuando recibas tu pedido.'
     )
 
+    const cambiarCampo = (nombre, valor) => {
+      const campo = contenedor.querySelector(`[name="${nombre}"]`)
+      const prototipo = campo.tagName === 'SELECT'
+        ? HTMLSelectElement.prototype
+        : HTMLInputElement.prototype
+      const descriptor = Object.getOwnPropertyDescriptor(prototipo, 'value')
+      act(() => {
+        descriptor.set.call(campo, valor)
+        campo.dispatchEvent(new Event(campo.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }))
+      })
+    }
+
+    cambiarCampo('region', 'Ñuble')
+    cambiarCampo('comuna', 'Chillán')
+    cambiarCampo('calle', 'Av. Argentina')
+    cambiarCampo('numero', '1250')
+
     act(() => {
       botonComprar.click()
     })
 
     expect(finalizarCompra).toHaveBeenCalledOnceWith(
       false,
-      'efectivo'
+      'efectivo',
+      jasmine.objectContaining({
+        region: 'Ñuble',
+        comuna: 'Chillán',
+        calle: 'Av. Argentina',
+        numero: '1250'
+      })
     )
 
     expect(contenedor.textContent).toContain(

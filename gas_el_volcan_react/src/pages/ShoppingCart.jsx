@@ -1,15 +1,29 @@
 import { useState } from 'react'
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap'
+import DireccionFormulario from '../components/DireccionFormulario.jsx'
+import { normalizarDireccion, validarDireccion } from '../utils/direccionDespacho.js'
 import { useNavigate } from 'react-router-dom'
 
 function ShoppingCart({
   carrito,
+  usuario,
   eliminarDelCarrito,
   cambiarCantidad,
   finalizarCompra
 }) {
   const [metodoPago, setMetodoPago] = useState('')
   const [error, setError] = useState('')
+  const [direccion, setDireccion] = useState(() => normalizarDireccion(usuario))
+
+  const cambiarDireccion = (evento) => {
+    const { name, value } = evento.target
+    setDireccion((anterior) => ({
+      ...anterior,
+      [name]: value,
+      ...(name === 'region' ? { comuna: '' } : {})
+    }))
+    setError('')
+  }
 
   const navigate = useNavigate()
 
@@ -25,9 +39,15 @@ function ShoppingCart({
       return
     }
 
+    const domicilio = validarDireccion(direccion)
+    if (!domicilio.correcto) {
+      setError(domicilio.mensaje)
+      return
+    }
+
     setError('')
 
-    const compraExitosa = finalizarCompra(simularFallo, metodoPago)
+    const compraExitosa = finalizarCompra(simularFallo, metodoPago, domicilio.direccion)
 
     if (compraExitosa) {
       navigate('/compra-exitosa')
@@ -99,9 +119,15 @@ function ShoppingCart({
 
               <hr />
 
-              <h3 className="h5 mb-3">Método de pago</h3>
-
+              <h3 className="h5 mb-3">Dirección de entrega</h3>
+              <p className="text-muted small">
+                Confirma dónde debemos llevar tu pedido. Puedes corregir los datos antes de pagar.
+              </p>
               <Form>
+                <DireccionFormulario direccion={direccion} onChange={cambiarDireccion} />
+
+                <hr className="my-4" />
+                <h3 className="h5 mb-3">Método de pago</h3>
                 <Form.Check
                   type="radio"
                   name="metodoPago"

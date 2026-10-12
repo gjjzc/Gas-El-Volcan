@@ -1,7 +1,7 @@
 import { Container, Row, Col, Card, Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 function Ofertas({ productos, agregarAlCarrito }) {
-    console.log('PRODUCTOS EN OFERTAS:', productos)
     const productosEnOferta = productos.filter(
         (producto) => Number(producto.descuento) > 0
     )
@@ -50,6 +50,15 @@ function Ofertas({ productos, agregarAlCarrito }) {
                                         <h3 className="h5">
                                             ${formatearPrecio(precioFinal)}
                                         </h3>
+
+                                        <Button
+                                            as={Link}
+                                            to={`/productos/${encodeURIComponent(producto.id)}`}
+                                            variant="outline-success"
+                                            className="me-2 mb-2"
+                                        >
+                                            Ver detalle
+                                        </Button>
 
                                         <Button
                                             variant="success"

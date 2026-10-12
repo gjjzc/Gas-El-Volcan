@@ -1,3 +1,4 @@
+import { formatearDireccion } from '../utils/direccionDespacho.js'
 import { Container, Button, Card, Badge } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
@@ -46,6 +47,7 @@ function CompraExitosa({ pedido }) {
           <p><strong>Número de pedido:</strong> {pedido.id}</p>
           <p><strong>Fecha:</strong> {fecha}</p>
           <p><strong>Método de pago:</strong> {nombreMetodoPago}</p>
+          <p><strong>Dirección de entrega:</strong> {formatearDireccion(pedido.direccionEntrega)}</p>
           <p>
             <strong>Estado:</strong>{' '}
             <Badge bg={estadoActual.color} text={estadoActual.color === 'warning' || estadoActual.color === 'info' ? 'dark' : undefined}>

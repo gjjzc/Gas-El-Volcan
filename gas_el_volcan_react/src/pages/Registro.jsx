@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { limpiarRUN, validarRUN } from '../utils/validaciones.js'
+import DireccionFormulario from '../components/DireccionFormulario.jsx'
+import { validarDireccion } from '../utils/direccionDespacho.js'
 
 const formularioInicial = {
     run: '',
@@ -12,26 +14,11 @@ const formularioInicial = {
     clave: '',
     confirmarClave: '',
     region: '',
-    comuna: ''
-}
-
-const regiones = {
-    'Ñuble': [
-        'Chillán',
-        'Chillán Viejo',
-        'Bulnes',
-        'Quillón',
-        'El Carmen',
-        'Pinto',
-        'San Ignacio'
-    ],
-    'Biobío': [
-        'Los Ángeles',
-        'Concepción'
-    ],
-    'La Araucanía': [
-        'Temuco'
-    ]
+    comuna: '',
+    calle: '',
+    numero: '',
+    departamento: '',
+    referencia: ''
 }
 
 const limpiarNombre = (valor) =>
@@ -120,7 +107,13 @@ function Registro({ registrarCliente }) {
             return
         }
 
-        const resultado = registrarCliente(formulario)
+        const domicilio = validarDireccion(formulario)
+        if (!domicilio.correcto) {
+            setError(domicilio.mensaje)
+            return
+        }
+
+        const resultado = registrarCliente({ ...formulario, ...domicilio.direccion })
 
         if (!resultado.correcto) {
             setError(resultado.mensaje)
@@ -238,46 +231,9 @@ function Registro({ registrarCliente }) {
                             </Col>
                         </Row>
 
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Región</Form.Label>
-                                    <Form.Select
-                                        name="region"
-                                        value={formulario.region}
-                                        onChange={manejarCambio}
-                                        required
-                                    >
-                                        <option value="">Selecciona una región</option>
-                                        {Object.keys(regiones).map((region) => (
-                                            <option key={region} value={region}>
-                                                {region}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-
-                            <Col md={6}>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Comuna</Form.Label>
-                                    <Form.Select
-                                        name="comuna"
-                                        value={formulario.comuna}
-                                        onChange={manejarCambio}
-                                        disabled={!formulario.region}
-                                        required
-                                    >
-                                        <option value="">Selecciona una comuna</option>
-                                        {(regiones[formulario.region] || []).map((comuna) => (
-                                            <option key={comuna} value={comuna}>
-                                                {comuna}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                        </Row>
+                        <h2 className="h5 mt-3">Dirección para despacho</h2>
+                        <p className="text-muted small">Se usará para completar tus pedidos. Podrás cambiarla antes de comprar.</p>
+                        <DireccionFormulario direccion={formulario} onChange={manejarCambio} />
 
                         <Button type="submit" variant="success" className="w-100">
                             Registrarse
