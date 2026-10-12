@@ -1,16 +1,23 @@
-# React + Vite
+# Gas El Volcán — Aplicación React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Proyecto React + Vite de la Evaluación Parcial 2. Lee el [README del repositorio](../README.md) para las funcionalidades, requisitos, instrucciones y resultados.
 
-Currently, two official plugins are available:
+## Comandos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```powershell
+npm ci
+npm run dev
+npm run build
+$env:CHROME_BIN = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+npm test
+```
 
-## React Compiler
+## Carpetas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `src/components/`: componentes reutilizables, catálogo y footer.
+- `src/pages/`: páginas de cliente, administración y repartidor.
+- `src/utils/`: validaciones, direcciones y zonas de despacho.
+- `src/**/*.spec.jsx`: pruebas Jasmine/Karma.
+- `public/`: catálogo inicial e imágenes.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+El funcionamiento es académico y usa almacenamiento local. No incluye servicios de backend.
