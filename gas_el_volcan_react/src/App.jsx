@@ -19,6 +19,7 @@ import Registro from './pages/Registro.jsx'
 import AdminUsuarios from './pages/AdminUsuarios.jsx'
 import AdminPedidos from './pages/AdminPedidos.jsx'
 import PanelRepartidor from './pages/PanelRepartidor.jsx'
+import MisPedidos from './pages/MisPedidos.jsx'
 
 function App() {
   const [productos, setProductos] = useState([])
@@ -743,6 +744,17 @@ function App() {
                 <Navigate to="/login" replace />
               )
             }
+          />
+
+          <Route
+            path="/mis-pedidos"
+            element={
+              usuario?.rol === 'cliente' ? (
+                <MisPedidos pedidos={pedidos} usuario={usuario} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            } 
           />
 
         </Routes>
