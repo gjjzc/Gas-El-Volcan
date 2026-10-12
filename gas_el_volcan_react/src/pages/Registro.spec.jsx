@@ -81,6 +81,9 @@ describe('Registro - Gas El Volcán', () => {
     cambiarCampo('confirmarClave', '123456')
     cambiarCampo('region', 'Ñuble')
     cambiarCampo('comuna', 'Chillán')
+    cambiarCampo('calle', 'Av. Argentina')
+    cambiarCampo('numero', '1250')
+    cambiarCampo('departamento', '302')
   }
 
   const enviarFormulario = () => {
@@ -136,7 +139,10 @@ describe('Registro - Gas El Volcán', () => {
         correo: 'cliente@gmail.com',
         clave: '123456',
         region: 'Ñuble',
-        comuna: 'Chillán'
+        comuna: 'Chillán',
+        calle: 'Av. Argentina',
+        numero: '1250',
+        departamento: '302'
       })
     )
 

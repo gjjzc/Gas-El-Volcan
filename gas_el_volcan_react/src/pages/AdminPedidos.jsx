@@ -1,3 +1,4 @@
+import { formatearDireccion } from '../utils/direccionDespacho.js'
 import { useState } from 'react'
 import {
   Container,
@@ -96,6 +97,7 @@ function AdminPedidos({
                     <th>Pedido</th>
                     <th>Fecha</th>
                     <th>Cliente</th>
+                    <th>Dirección de entrega</th>
                     <th>Productos</th>
                     <th>Total</th>
                     <th>Pago</th>
@@ -128,6 +130,10 @@ function AdminPedidos({
                             Compra sin cuenta
                           </span>
                         )}
+                      </td>
+
+                      <td className="small" style={{ minWidth: '180px' }}>
+                        {formatearDireccion(pedido.direccionEntrega)}
                       </td>
 
                       <td>

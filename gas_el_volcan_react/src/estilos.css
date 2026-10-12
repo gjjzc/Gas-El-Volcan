@@ -1314,3 +1314,143 @@ footer h3 ~ p a {
     box-shadow: none;
   }
 }
+
+
+/* Footer React: horarios de despacho por zona del catálogo del caso. */
+.footer-sitio {
+  width: 100%;
+}
+
+.footer-sitio .footer-logo {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  padding: 5px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.footer-sitio .footer-grid > * {
+  min-width: 0;
+}
+
+.footer-enlaces {
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.footer-sitio a:hover,
+.footer-sitio a:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer-ir-zonas {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-cobertura {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-cobertura h3 {
+  margin-bottom: 8px;
+}
+
+.footer-aviso {
+  color: #dceee6;
+  margin-bottom: 16px;
+  max-width: 850px;
+}
+
+.footer-zonas-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.footer-zona {
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  min-width: 0;
+}
+
+.footer-zona h4 {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.footer-zona-comunas {
+  font-size: 0.875rem;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+.footer-zona dl {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.footer-zona dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 8px;
+}
+
+.footer-zona dt {
+  font-weight: 700;
+  color: #fff;
+}
+
+.footer-zona dd {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .footer-zonas-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .footer-zonas-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.tarjeta-producto-imagen {
+  height: 190px;
+  object-fit: contain;
+  padding: 12px;
+}
+
+.enlace-producto:hover,
+.enlace-producto:focus-visible {
+  color: var(--verde2);
+  text-decoration: underline;
+}
+
+.detalle-producto-imagen-contenedor {
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--blanco);
+  padding: 24px;
+}
+
+.detalle-producto-imagen {
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+}

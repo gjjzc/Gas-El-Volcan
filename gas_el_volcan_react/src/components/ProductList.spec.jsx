@@ -14,6 +14,7 @@ describe('ProductList - Catálogo de Gas El Volcán', () => {
       precio: 10400,
       imagen: 'img/gas5.jpg',
       categoria: 'Gas',
+      descripcion: 'Compatible con reguladores estándar',
       stock: 10,
       descuento: 0
     },
@@ -68,6 +69,47 @@ describe('ProductList - Catálogo de Gas El Volcán', () => {
       )
     })
   }
+
+  it('debe filtrar por texto sin importar mayúsculas', () => {
+    renderizarCatalogo()
+    const buscador = contenedor.querySelector('input[type="search"]')
+    expect(buscador).not.toBeNull()
+
+    act(() => {
+      const setter = Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype, 'value'
+      ).set
+      setter.call(buscador, 'REGULADOR')
+      buscador.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+
+    expect(contenedor.textContent).toContain('Productos encontrados: 1')
+    expect(contenedor.textContent).toContain('Regulador de gas')
+    expect(contenedor.textContent).not.toContain('Cilindro GLP 5 kg')
+  })
+
+  it('no debe incluir resultados cuya coincidencia esta solo en la descripcion', () => {
+    renderizarCatalogo()
+    const buscador = contenedor.querySelector('input[type="search"]')
+
+    act(() => {
+      const setter = Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype, 'value'
+      ).set
+      setter.call(buscador, 'compatible')
+      buscador.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+
+    expect(contenedor.textContent).toContain('Productos encontrados: 0')
+    expect(contenedor.textContent).toContain('No encontramos productos')
+  })
+
+  it('debe permitir abrir el detalle individual de un producto', () => {
+    renderizarCatalogo()
+    const enlace = contenedor.querySelector('a[href="/productos/1"]')
+    expect(enlace).not.toBeNull()
+    expect(enlace.getAttribute('aria-label')).toContain('Cilindro GLP 5 kg')
+  })
 
   it('debe mostrar todos los productos del catálogo', () => {
     renderizarCatalogo()

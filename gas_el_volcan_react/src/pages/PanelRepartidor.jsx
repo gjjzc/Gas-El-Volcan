@@ -1,3 +1,4 @@
+import { formatearDireccion } from '../utils/direccionDespacho.js'
 import { Container, Card, Table, Badge, Button, Alert } from 'react-bootstrap'
 import { useState } from 'react'
 
@@ -79,6 +80,7 @@ function PanelRepartidor({ pedidos = [], usuario, actualizarEstadoPedido }) {
                 <tr>
                   <th>Pedido</th>
                   <th>Cliente</th>
+                  <th>Dirección de entrega</th>
                   <th>Productos</th>
                   <th>Total</th>
                   <th>Estado</th>
@@ -93,6 +95,10 @@ function PanelRepartidor({ pedidos = [], usuario, actualizarEstadoPedido }) {
 
                     <td>
                       {pedido.cliente?.nombre || 'Compra sin cuenta'}
+                    </td>
+
+                    <td className="small" style={{ minWidth: '180px' }}>
+                      {formatearDireccion(pedido.direccionEntrega)}
                     </td>
 
                     <td>

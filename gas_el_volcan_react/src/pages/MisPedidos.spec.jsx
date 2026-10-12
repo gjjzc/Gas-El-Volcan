@@ -15,6 +15,7 @@ describe('MisPedidos - Gas El Volcán', () => {
   const pedidosPrueba = [
     {
       id: 'PED-000011',
+      direccionEntrega: { region: 'Ñuble', comuna: 'Chillán', calle: 'Av. Argentina', numero: '1250' },
       fecha: '2026-10-12T10:00:00',
       cliente: {
         nombre: 'Pedro',
@@ -107,6 +108,7 @@ describe('MisPedidos - Gas El Volcán', () => {
 
     expect(contenido).toContain('PED-000011')
     expect(contenido).toContain('PED-000012')
+    expect(contenido).toContain('Av. Argentina 1250')
 
     expect(contenido).not.toContain('PED-000013')
     expect(contenido).not.toContain('Regulador de gas')

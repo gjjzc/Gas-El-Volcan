@@ -15,6 +15,7 @@ describe('PanelRepartidor - Gas El Volcán', () => {
   const pedidosPrueba = [
     {
       id: 'PED-000011',
+      direccionEntrega: { region: 'Ñuble', comuna: 'Chillán', calle: 'Av. Argentina', numero: '1250', departamento: '302' },
       repartidorRun: '111111111',
       cliente: {
         nombre: 'Pedro'
@@ -107,6 +108,7 @@ describe('PanelRepartidor - Gas El Volcán', () => {
     expect(contenido).toContain('Panel de entregas')
     expect(contenido).toContain('PED-000011')
     expect(contenido).toContain('PED-000012')
+    expect(contenido).toContain('Av. Argentina 1250')
 
     expect(contenido).not.toContain('PED-000013')
 
