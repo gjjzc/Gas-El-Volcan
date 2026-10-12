@@ -20,6 +20,7 @@ import AdminUsuarios from './pages/AdminUsuarios.jsx'
 import AdminPedidos from './pages/AdminPedidos.jsx'
 import PanelRepartidor from './pages/PanelRepartidor.jsx'
 import MisPedidos from './pages/MisPedidos.jsx'
+import { usuariosPrueba } from './utils/usuariosPrueba'
 
 function App() {
   const [productos, setProductos] = useState([])
@@ -33,8 +34,9 @@ function App() {
       return null
     }
   })
-  const [clientes, setClientes] = useState([])
-
+  const [clientes, setClientes] = useState(() =>
+    usuariosPrueba.map((usuario) => ({ ...usuario }))
+  )
 
   const crearUsuario = (datos) => {
     const correo = datos.correo.trim().toLowerCase()
@@ -754,7 +756,7 @@ function App() {
               ) : (
                 <Navigate to="/login" replace />
               )
-            } 
+            }
           />
 
         </Routes>
