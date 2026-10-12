@@ -18,13 +18,20 @@ import Login from './pages/Login.jsx'
 import Registro from './pages/Registro.jsx'
 import AdminUsuarios from './pages/AdminUsuarios.jsx'
 import AdminPedidos from './pages/AdminPedidos.jsx'
+import PanelRepartidor from './pages/PanelRepartidor.jsx'
 
 function App() {
   const [productos, setProductos] = useState([])
   const [productosCargados, setProductosCargados] = useState(false)
 
-  const [usuario, setUsuario] = useState(null)
-
+  const [usuario, setUsuario] = useState(() => {
+    try {
+      const usuarioGuardado = sessionStorage.getItem('usuarioGas')
+      return usuarioGuardado ? JSON.parse(usuarioGuardado) : null
+    } catch {
+      return null
+    }
+  })
   const [clientes, setClientes] = useState([])
 
 
@@ -179,10 +186,14 @@ function App() {
   }, [pedidos])
 
   const iniciarSesion = (datosUsuario) => {
-    setUsuario(datosUsuario)
+    const { clave, ...datosPublicos } = datosUsuario
+
+    sessionStorage.setItem('usuarioGas', JSON.stringify(datosPublicos))
+    setUsuario(datosPublicos)
   }
 
   const cerrarSesion = () => {
+    sessionStorage.removeItem('usuarioGas')
     setUsuario(null)
   }
 
@@ -449,7 +460,7 @@ function App() {
     setCarrito([])
 
 
-    
+
     return true
   }
 
@@ -491,9 +502,9 @@ function App() {
       anteriores.map((item) =>
         item.id === pedidoId
           ? {
-              ...item,
-              repartidorRun
-            }
+            ...item,
+            repartidorRun
+          }
           : item
       )
     )
@@ -504,6 +515,54 @@ function App() {
     }
   }
 
+
+
+  const actualizarEstadoPedido = (pedidoId, nuevoEstado) => {
+    const pedido = pedidos.find((item) => item.id === pedidoId)
+
+    if (!pedido) {
+      return {
+        correcto: false,
+        mensaje: 'El pedido no existe.'
+      }
+    }
+
+    if (
+      usuario?.rol !== 'repartidor' ||
+      pedido.repartidorRun !== usuario.run
+    ) {
+      return {
+        correcto: false,
+        mensaje: 'No tienes permiso para actualizar este pedido.'
+      }
+    }
+
+    const transiciones = {
+      pendiente: 'preparacion',
+      preparacion: 'camino',
+      camino: 'entregado'
+    }
+
+    if (transiciones[pedido.estado] !== nuevoEstado) {
+      return {
+        correcto: false,
+        mensaje: 'El cambio de estado no está permitido.'
+      }
+    }
+
+    setPedidos((anteriores) =>
+      anteriores.map((item) =>
+        item.id === pedidoId
+          ? { ...item, estado: nuevoEstado }
+          : item
+      )
+    )
+
+    return {
+      correcto: true,
+      mensaje: 'Estado del pedido actualizado correctamente.'
+    }
+  }
 
   return (
     <>
@@ -583,12 +642,20 @@ function App() {
             }
           />
 
+
           <Route
             path="/compra-exitosa"
             element={
-              <CompraExitosa pedido={ultimoPedido} />
+              <CompraExitosa
+                pedido={
+                  pedidos.find(
+                    (pedido) => pedido.id === ultimoPedido?.id
+                  ) || ultimoPedido
+                }
+              />
             }
           />
+
 
           <Route
             path="/compra-fallida"
@@ -628,7 +695,7 @@ function App() {
             }
           />
 
-          
+
           <Route
             path="/admin/pedidos"
             element={
@@ -660,6 +727,21 @@ function App() {
                 productos={productos}
                 agregarAlCarrito={agregarAlCarrito}
               />
+            }
+          />
+
+          <Route
+            path="/repartidor"
+            element={
+              usuario?.rol === 'repartidor' ? (
+                <PanelRepartidor
+                  pedidos={pedidos}
+                  usuario={usuario}
+                  actualizarEstadoPedido={actualizarEstadoPedido}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
 
